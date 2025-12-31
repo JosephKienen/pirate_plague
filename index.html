@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dossiê Náutico — Arquivo Confidencial</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Georgia', serif;
+      color: #3b2f1e;
+      line-height: 1.6;
+      background-color: #c9b58a;
+      background-image:
+        radial-gradient(rgba(0,0,0,0.08) 1px, transparent 1px),
+        radial-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255,255,255,0.15), rgba(0,0,0,0.15)),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="600" height="600" filter="url(%23n)" opacity="0.15"/></svg>');
+      background-size: 120px 120px, 240px 240px, cover, 600px 600px;
+      background-attachment: fixed;
+    }
+
+    header {
+      background: linear-gradient(rgba(40,30,15,0.9), rgba(90,70,40,0.85));
+      padding: 70px 20px;
+      text-align: center;
+      border-bottom: 4px solid #5a4425;
+      box-shadow: inset 0 -6px 20px rgba(0,0,0,0.4);
+    }
+
+    header h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      letter-spacing: 3px;
+      color: #f3e6c8;
+      text-shadow: 2px 2px 0 #3b2f1e;
+    }
+
+    header p {
+      font-style: italic;
+      opacity: 0.9;
+      color: #e8d9b0;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      background: rgba(60,45,25,0.95);
+      padding: 12px;
+      text-align: center;
+      border-bottom: 3px solid #5a4425;
+      z-index: 10;
+    }
+
+    nav a {
+      color: #f0d58a;
+      margin: 0 18px;
+      text-decoration: none;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    nav a:hover { text-decoration: underline; }
+
+    section {
+      max-width: 950px;
+      margin: 70px auto;
+      padding: 0 25px;
+    }
+
+    section h2 {
+      border-bottom: 3px double #6b5331;
+      padding-bottom: 12px;
+      margin-bottom: 35px;
+      color: #4a361f;
+      letter-spacing: 2px;
+    }
+
+    .card {
+      background: rgba(255,248,230,0.85);
+      border: 2px solid #6b5331;
+      padding: 22px;
+      margin-bottom: 30px;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3"/></filter><rect width="200" height="200" filter="url(%23n)" opacity="0.08"/></svg>');
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: scale(1.03) rotate(-0.2deg);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.35);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: #3a2916;
+      letter-spacing: 1px;
+    }
+
+    .status {
+      font-size: 0.85em;
+      font-weight: bold;
+      color: #6b5331;
+      margin-bottom: 10px;
+    }
+
+    .img-slot {
+      width: 100%;
+      height: 180px;
+      background:
+        linear-gradient(135deg, rgba(90,70,40,0.6), rgba(30,20,10,0.8)),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.08) 0 6px, transparent 6px 12px);
+      border: 2px dashed #6b5331;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-style: italic;
+      color: #f3e6c8;
+      text-shadow: 1px 1px 0 #2a1d10;
+    }
+
+    .extra {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.5s ease, opacity 0.5s ease;
+    }
+
+    .card:hover .extra {
+      max-height: 320px;
+      opacity: 1;
+    }
+
+    footer {
+      text-align: center;
+      padding: 50px 20px;
+      border-top: 4px solid #5a4425;
+      font-style: italic;
+      color: #3b2f1e;
+      background: rgba(90,70,40,0.6);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Dossiê Náutico Confidencial</h1>
+  <p>Navios desaparecem. Rotas mentem. O mar observa.</p>
+</header>
+
+<nav>
+  <a href="#classes">Classes</a>
+  <a href="#especies">Espécies</a>
+  <a href="#cadastro" id="adminLink" style="display:none">Modo Mestre</a>
+  <a href="#" id="loginLink">Entrar como Mestre</a>
+</nav>
+
+<section id="cadastro" style="display:none">
+  <h2>📝 Cadastro de Novos Registros (Modo Mestre)</h2>
+  <div class="card">
+    <form id="formCadastro">
+      <input type="hidden" id="editIndex" />
+
+      <label>Tipo de Registro</label><br/>
+      <select id="tipo" required>
+        <option value="classe">Classe</option>
+        <option value="especie">Espécie</option>
+      </select><br/><br/>
+
+      <label>Nome</label><br/>
+      <input type="text" id="nome" required style="width:100%"><br/><br/>
+
+      <label>Status / Perfil</label><br/>
+      <input type="text" id="status" style="width:100%"><br/><br/>
+
+      <label>Descrição</label><br/>
+      <textarea id="descricao" rows="4" style="width:100%" required></textarea><br/><br/>
+
+      <button type="submit">Salvar Registro</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>📦 Sincronização Manual</h3>
+    <p>Use este recurso para levar o Dossiê para outro dispositivo.</p>
+    <button onclick="exportarDados()">Exportar Dossiê</button>
+    <br/><br/>
+    <input type="file" id="importFile" accept="application/json" />
+    <button onclick="importarDados()">Importar Dossiê</button>
+  </div>
+</section>
+
+<section id="classes">
+  <h2>⚔️ Classes Registradas</h2>
+
+  <div class="card">
+      <div class="img-slot">Imagem da Classe / Espécie</div>
+      
+    <h3>Bucaneiro</h3>
+    <p><em>Quando o silêncio falha, ele avança.</em></p>
+    <p>Robusto, intimidador e marcado por batalhas, o Bucaneiro é a linha de frente quando a diplomacia se esgota.</p>
+    <p><strong>Nota:</strong> Muitos parecem pressentir o perigo antes que ele se revele.</p>
+  
+      <div class="extra">
+        <p><em>Informações adicionais surgem conforme o registro é analisado mais a fundo.</em></p>
+      </div>
+    </div>
+
+  <div class="card">
+      <div class="img-slot">Imagem da Classe / Espécie</div>
+      
+    <h3>Atirador</h3>
+    <p><em>Um disparo pode ser mais informativo que mil perguntas.</em></p>
+    <p>Ágil, preciso e sempre observando. Costuma resolver conflitos antes que eles se tornem batalhas.</p>
+    <p><strong>Nota:</strong> Alguns erram apenas quando querem.</p>
+  
+      <div class="extra">
+        <p><em>Informações adicionais surgem conforme o registro é analisado mais a fundo.</em></p>
+      </div>
+    </div>
+
+  <div class="card">
+      <div class="img-slot">Imagem da Classe / Espécie</div>
+      
+    <h3>Sirene / Meia-Sereia</h3>
+    <p><em>Nem tudo que chama no mar quer ser encontrado.</em></p>
+    <p>Humanidade misturada à magia marítima. Registros sobre suas origens são inconsistentes.</p>
+    <p><strong>Status:</strong> Registro parcialmente confiável.</p>
+  
+      <div class="extra">
+        <p><em>Informações adicionais surgem conforme o registro é analisado mais a fundo.</em></p>
+      </div>
+    </div>
+
+  <div class="card">
+      <div class="img-slot">Imagem da Classe / Espécie</div>
+      
+    <h3>Médico</h3>
+    <p><em>Desde que ainda esteja respirando… há esperança.</em></p>
+    <p>Curandeiros, cirurgiões e sobreviventes. Sabem mais sobre a tripulação do que aparentam.</p>
+    <p><strong>Nota:</strong> Alguns mantêm diários que jamais compartilham.</p>
+  
+      <div class="extra">
+        <p><em>Informações adicionais surgem conforme o registro é analisado mais a fundo.</em></p>
+      </div>
+    </div>
+</section>
+
+<section id="especies">
+  <h2>🧬 Espécies Catalogadas</h2>
+
+  <div class="card">
+      <div class="img-slot">Imagem da Classe / Espécie</div>
+      
+    <h3>Ancorados</h3>
+    <p class="status">Status: Confirmados</p>
+    <p>Sobreviventes de afundamentos impossíveis. Algo os manteve presos ao mundo dos vivos.</p>
+  
+      <div class="extra">
+        <p><em>Informações adicionais surgem conforme o registro é analisado mais a fundo.</em></p>
+      </div>
+    </div>
+
+  <div class="card">
+      <div class="img-slot">Imagem da Classe / Espécie</div>
+      
+    <h3>Cartógrafos do Vazio</h3>
+    <p class="status">Status: Contestados</p>
+    <p>Mapeadores de rotas que não existem em cartas oficiais — mas funcionam.</p>
+  
+      <div class="extra">
+        <p><em>Informações adicionais surgem conforme o registro é analisado mais a fundo.</em></p>
+      </div>
+    </div>
+
+  <div class="card">
+      <div class="img-slot">Imagem da Classe / Espécie</div>
+      
+    <h3>Grumetes Marcados</h3>
+    <p class="status">Status: Confirmados</p>
+    <p>Aprendizes que cresceram rápido demais após testemunhar horrores marítimos.</p>
+  
+      <div class="extra">
+        <p><em>Informações adicionais surgem conforme o registro é analisado mais a fundo.</em></p>
+      </div>
+    </div>
+
+  <div class="card">
+      <div class="img-slot">Imagem da Classe / Espécie</div>
+      
+    <h3>Timoneiros do Limiar</h3>
+    <p class="status">Status: Parcialmente confirmados</p>
+    <p>Condutores de navios que atravessaram mares onde o tempo falha.</p>
+  
+      <div class="extra">
+        <p><em>Informações adicionais surgem conforme o registro é analisado mais a fundo.</em></p>
+      </div>
+    </div>
+
+  <div class="card">
+      <div class="img-slot">Imagem da Classe / Espécie</div>
+      
+    <h3>Abordadores</h3>
+    <p class="status">Perfil: Combate | Humanos</p>
+    <p>Especialistas em combate naval corpo a corpo. Vivem para o choque entre cascos.</p>
+  
+      <div class="extra">
+        <p><em>Informações adicionais surgem conforme o registro é analisado mais a fundo.</em></p>
+      </div>
+    </div>
+
+  <div class="card">
+      <div class="img-slot">Imagem da Classe / Espécie</div>
+      
+    <h3>Marinheiros de Aço</h3>
+    <p class="status">Perfil: Combate | Humanos</p>
+    <p>Veteranos de guerras marítimas. Não são rápidos, mas são os últimos a cair.</p>
+  
+      <div class="extra">
+        <p><em>Informações adicionais surgem conforme o registro é analisado mais a fundo.</em></p>
+      </div>
+    </div>
+
+  <div class="card">
+      <div class="img-slot">Imagem da Classe / Espécie</div>
+      
+    <h3>Vigias do Breu</h3>
+    <p class="status">Status: Contestados</p>
+    <p>Vigias que enxergam através de nevoeiros e noites impossíveis.</p>
+  
+      <div class="extra">
+        <p><em>Informações adicionais surgem conforme o registro é analisado mais a fundo.</em></p>
+      </div>
+    </div>
+
+  <div class="card">
+      <div class="img-slot">Imagem da Classe / Espécie</div>
+      
+    <h3>Calafates Abissais</h3>
+    <p class="status">Registro incompleto</p>
+    <p>Antigos reparadores de navios recuperados do fundo do mar — navios que não deveriam voltar.</p>
+  
+      <div class="extra">
+        <p><em>Informações adicionais surgem conforme o registro é analisado mais a fundo.</em></p>
+      </div>
+    </div>
+</section>
+
+<footer>
+  <p>Se você está lendo isto, já sabe demais.</p>
+</footer>
+
+<script>
+  const MASTER_PASSWORD = 'pirata123'; // altere depois
+
+  let registros = JSON.parse(localStorage.getItem('dossieRegistros')) || [];
+  let isMaster = false;
+
+  const classesSec = document.getElementById('classes');
+  const especiesSec = document.getElementById('especies');
+  const cadastroSec = document.getElementById('cadastro');
+  const adminLink = document.getElementById('adminLink');
+  const loginLink = document.getElementById('loginLink');
+
+  function salvar() {
+    localStorage.setItem('dossieRegistros', JSON.stringify(registros));
+  }
+
+  function exportarDados() {
+    const data = JSON.stringify(registros, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'dossie-nautico.json';
+    a.click();
+  }
+
+  function importarDados() {
+    const fileInput = document.getElementById('importFile');
+    if (!fileInput.files.length) return alert('Selecione um arquivo');
+
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        registros = JSON.parse(e.target.result);
+        salvar();
+        render();
+        alert('Dossiê importado com sucesso');
+      } catch {
+        alert('Arquivo inválido');
+      }
+    };
+    reader.readAsText(fileInput.files[0]);
+  }
+
+  function render() {
+    classesSec.querySelectorAll('.dynamic').forEach(e => e.remove());
+    especiesSec.querySelectorAll('.dynamic').forEach(e => e.remove());
+
+    registros.forEach((r, i) => {
+      const card = document.createElement('div');
+      card.className = 'card dynamic';
+      card.innerHTML = `
+        <div class="img-slot">Imagem da Classe / Espécie</div>
+        <h3>${r.nome}</h3>
+        ${r.status ? `<p class="status">${r.status}</p>` : ''}
+        <p>${r.descricao}</p>
+        <div class="extra">
+          ${isMaster ? `<button onclick="editar(${i})">Editar</button>` : '<em>Registro oficial.</em>'}
+        </div>
+      `;
+      (r.tipo === 'classe' ? classesSec : especiesSec).appendChild(card);
+    });
+  }
+
+  function editar(index) {
+    const r = registros[index];
+    document.getElementById('editIndex').value = index;
+    document.getElementById('tipo').value = r.tipo;
+    document.getElementById('nome').value = r.nome;
+    document.getElementById('status').value = r.status;
+    document.getElementById('descricao').value = r.descricao;
+    cadastroSec.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  document.getElementById('formCadastro').addEventListener('submit', e => {
+    e.preventDefault();
+    const index = document.getElementById('editIndex').value;
+    const novo = {
+      tipo: tipo.value,
+      nome: nome.value,
+      status: status.value,
+      descricao: descricao.value
+    };
+
+    if (index === '') registros.push(novo);
+    else registros[index] = novo;
+
+    salvar();
+    e.target.reset();
+    document.getElementById('editIndex').value = '';
+    render();
+  });
+
+  loginLink.addEventListener('click', e => {
+    e.preventDefault();
+    const senha = prompt('Senha do Mestre:');
+    if (senha === MASTER_PASSWORD) {
+      isMaster = true;
+      cadastroSec.style.display = 'block';
+      adminLink.style.display = 'inline';
+      loginLink.style.display = 'none';
+      render();
+      alert('Modo Mestre ativado');
+    } else {
+      alert('Senha incorreta');
+    }
+  });
+
+  render();
+</script>
+</body>
+</html>
